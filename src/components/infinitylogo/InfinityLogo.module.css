@@ -1,0 +1,15 @@
+.linkWrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+
+    text-decoration: none;
+}
+
+.linkWrapper div {
+    color: light-dark(var(--mantine-color-blue-7), var(--mantine-color-gray-1));
+    font-size: calc(24px * var(--mantine-scale));
+    font-weight: 600;
+}
