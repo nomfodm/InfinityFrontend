@@ -5,7 +5,8 @@ export interface User {
     active: boolean;
     registeredAt: Date;
     textures: Textures;
-    minecraftCredential: MinecraftCredential
+    minecraftCredential: MinecraftCredential;
+    accessToken: string;
 }
 
 interface Textures {

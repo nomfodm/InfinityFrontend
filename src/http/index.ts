@@ -28,7 +28,8 @@ $api.interceptors.response.use(
                 config.headers.Authorization = `Bearer ${refreshResponse.accessToken}`
 
                 return axios(config)
-            } catch {
+            } catch (error) {
+                console.log(error)
                 localStorage.removeItem("token")
                 store.dispatch(logout())
             }
