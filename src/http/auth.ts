@@ -65,10 +65,13 @@ export async function me() {
     try {
         const request = await $api.get<User>("/user/me")
         const response = request.data
+        localStorage.setItem("user", JSON.stringify(response))
         store.dispatch(authReducer.login(response))
     } catch (error) {
-        store.dispatch(authReducer.logout())
         console.log(error)
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        store.dispatch(authReducer.logout())
     }
 }
 
@@ -79,6 +82,7 @@ export async function logout() {
         console.log(error)
     } finally {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         store.dispatch(authReducer.logout())
     }
 }

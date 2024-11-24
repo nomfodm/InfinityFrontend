@@ -12,7 +12,7 @@ const initialState: AuthState = {
     authed: false,
     authing: false,
     messageOnLoginPage: "",
-    user: undefined,
+    user: JSON.parse(localStorage.getItem("user")!),
 }
 
 export const authSlice = createSlice({
