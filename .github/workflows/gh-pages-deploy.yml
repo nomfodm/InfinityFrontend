@@ -49,3 +49,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+
+      - name: Set custom domain
+        run: |-
+              touch ./dist/CNAME
+              echo 'infinityserver.ru' > ./dist/CNAME
