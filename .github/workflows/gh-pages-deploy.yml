@@ -44,13 +44,13 @@ jobs:
           name: production-files
           path: ./dist
 
+      - name: Set custom domain
+        run: |-
+              touch ./dist/CNAME
+              echo 'infinityserver.ru' > ./dist/CNAME
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-
-      - name: Set custom domain
-        run: |-
-              touch ./dist/CNAME
-              echo 'infinityserver.ru' > ./dist/CNAME
