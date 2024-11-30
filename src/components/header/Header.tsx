@@ -25,8 +25,12 @@ import {ThemeToggleButton} from "../themetogglebutton/ThemeToggleButton.tsx";
 import {getTextureAvatarURL} from "../../utils/textures.ts";
 
 const links = [
-    {link: '/about', label: 'О нас'},
-    {link: '/launcher', label: 'Лаунчер'},
+    {link: '/about', label: 'О нас', blank: false},
+    {
+        link: "https://github.com/nomfodm/InfinityLauncher/releases/latest/download/InfinityLauncher.exe",
+        label: 'Лаунчер',
+        blank: true
+    },
 ];
 export default function Header() {
     useLayoutEffect(() => {
@@ -68,6 +72,7 @@ export default function Header() {
                 to={link.link}
                 className={classes.link}
                 onClick={close}
+                target={link.blank ? "_blank" : undefined}
             >
                 {link.label}
             </Link>
@@ -191,7 +196,8 @@ export default function Header() {
                                     leftSection={<IconLogin2 size={18}/>} variant="filled">
                                 Войти
                             </Button>
-                            <Button loading={auth.authing} onClick={handleRegister} leftSection={<IconUserPlus size={18}/>}
+                            <Button loading={auth.authing} onClick={handleRegister}
+                                    leftSection={<IconUserPlus size={18}/>}
                                     variant="outline">
                                 Зарегистрироваться
                             </Button>
