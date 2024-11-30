@@ -25,12 +25,8 @@ import {ThemeToggleButton} from "../themetogglebutton/ThemeToggleButton.tsx";
 import {getTextureAvatarURL} from "../../utils/textures.ts";
 
 const links = [
-    {link: '/about', label: 'О нас', blank: false},
-    {
-        link: "https://github.com/nomfodm/InfinityLauncher/releases/latest/download/InfinityLauncher.exe",
-        label: 'Лаунчер',
-        blank: true
-    },
+    {link: '/about', label: 'О нас'},
+    {link: "/launcher", label: 'Лаунчер'},
 ];
 export default function Header() {
     useLayoutEffect(() => {
@@ -72,7 +68,6 @@ export default function Header() {
                 to={link.link}
                 className={classes.link}
                 onClick={close}
-                target={link.blank ? "_blank" : undefined}
             >
                 {link.label}
             </Link>

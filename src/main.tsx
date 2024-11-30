@@ -14,6 +14,7 @@ import ai from "./extend/actionicon.module.css"
 import {Page404} from "./pages/404/Page404.tsx";
 import PersonalAccount from "./pages/personalaccount/PersonalAccount.tsx";
 import RegisterPage from "./pages/register/RegisterPage.tsx";
+import Redirect from "./components/redirect/Redirect.tsx";
 
 
 const router = createBrowserRouter([
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
             {
                 path: "pa",
                 element: <PersonalAccount/>
+            },
+            {
+                path: "launcher",
+                element: <Redirect url={"https://github.com/nomfodm/InfinityLauncher/releases/latest/download/InfinityLauncher.exe"}/>
             },
             {
                 path: "*",
