@@ -16,21 +16,23 @@ import {
 } from '@tabler/icons-react';
 import classes from './Header.module.css';
 import InfinityLogo from "../infinitylogo/InfinityLogo.tsx";
-import {useLayoutEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import cx from "clsx";
 import {checkAuth, logout} from "../../http/auth.ts";
 import {useAppSelector} from "../../store/hooks.ts";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import {ThemeToggleButton} from "../themetogglebutton/ThemeToggleButton.tsx";
 import {getTextureAvatarURL} from "../../utils/textures.ts";
+import {checkConnection} from "../../http/connection.ts";
 
 const links = [
     {link: '/about', label: 'О нас'},
     {link: "/launcher", label: 'Лаунчер'},
 ];
 export default function Header() {
-    useLayoutEffect(() => {
+    useEffect(() => {
         async function wrapper() {
+            await checkConnection()
             await checkAuth();
         }
 
@@ -40,6 +42,9 @@ export default function Header() {
     const [opened, {toggle, close}] = useDisclosure(false);
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const auth = useAppSelector((state) => state.auth)
+    const connection = useAppSelector((state) => state.connection)
+    const isConnectedToServer = !connection.error && connection.backend
+
     const navigate = useNavigate()
 
     function handleSettings() {
@@ -166,7 +171,7 @@ export default function Header() {
                             {!auth.authed &&
                                 <Button loading={auth.authing} size={"xs"} onClick={handleLogin}
                                         leftSection={<IconLogin2 size={18}/>}
-                                        variant="filled">
+                                        variant="filled" disabled={!isConnectedToServer}>
                                     Войти
                                 </Button>
                             }
@@ -188,12 +193,13 @@ export default function Header() {
                     {!auth.authed &&
                         <Group gap={10}>
                             <Button loading={auth.authing} onClick={handleLogin}
-                                    leftSection={<IconLogin2 size={18}/>} variant="filled">
+                                    leftSection={<IconLogin2 size={18}/>} variant="filled" disabled={!isConnectedToServer}>
                                 Войти
                             </Button>
                             <Button loading={auth.authing} onClick={handleRegister}
                                     leftSection={<IconUserPlus size={18}/>}
-                                    variant="outline">
+                                    variant="outline"
+                                    disabled={!isConnectedToServer}>
                                 Зарегистрироваться
                             </Button>
                         </Group>

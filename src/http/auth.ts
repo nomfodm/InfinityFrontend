@@ -10,13 +10,31 @@ import {clearMessageOnLoginPage, setMessageOnLoginPage} from "../store/auth/auth
 import {setMessageOnRegisterPage, setNotRegistering} from "../store/auth/registerSlice.ts";
 
 export async function checkAuth() {
+    if (!isConnected()) {
+        return
+    }
     if (localStorage.getItem("token")) {
         await me()
     }
 }
 
+export function isConnected(): boolean {
+    const connectionState = store.getState().connection
+    if (connectionState.error) {
+        return false
+    }
+
+    return connectionState.backend;
+}
+
 export async function login(username: string, password: string): Promise<boolean> {
     store.dispatch(authReducer.authing())
+    if (!isConnected()) {
+        store.dispatch(setMessageOnLoginPage("Нет соединения с сервером. Обновите страницу."))
+        store.dispatch(authReducer.logout())
+        return false;
+    }
+
     await new Promise((resolve) => {setTimeout(resolve, 1000)});
     try {
         const request = await $api.post<SignInResponse>("/auth/signin", {username, password})
@@ -38,6 +56,12 @@ export async function login(username: string, password: string): Promise<boolean
 }
 
 export async function register(username: string, email: string, password: string): Promise<boolean> {
+    if (!isConnected()) {
+        store.dispatch(setNotRegistering())
+        store.dispatch(setMessageOnRegisterPage("Нет соединения с сервером. Обновите страницу."))
+        return false;
+    }
+
     store.dispatch(registerReducer.setRegistering())
     await new Promise((resolve) => {setTimeout(resolve, 1000)});
     try {
@@ -57,6 +81,10 @@ export async function register(username: string, email: string, password: string
 }
 
 export async function me() {
+    if (!isConnected()) {
+        return
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
         return
@@ -76,6 +104,9 @@ export async function me() {
 }
 
 export async function logout() {
+    if (!isConnected()) {
+        return
+    }
     try {
         await $api.post("/auth/logout")
     } catch (error) {
