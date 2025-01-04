@@ -2,46 +2,39 @@ import {User} from "../../models/user.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface AuthState {
-    authed: boolean;
-    authing: boolean;
-    messageOnLoginPage: string;
+    // authing: boolean;
     user?: User;
+    accessToken?: string;
+    persist: boolean;
 }
 
 const initialState: AuthState = {
-    authed: false,
-    authing: false,
-    messageOnLoginPage: "",
-    user: JSON.parse(localStorage.getItem("user")!),
+    user: undefined,
+    accessToken: undefined,
+    persist: JSON.parse(localStorage.getItem("persist")!) && true
 }
 
 export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        authing: (state) => {
-            state.authing = true;
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload;
         },
-        login: (state, action: PayloadAction<User>) => {
-            state.authed = true;
-            state.authing = false;
+        setUser: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
         },
         logout: (state) => {
-            state.authed = false;
-            state.authing = false;
+            state.accessToken = undefined;
             state.user = undefined;
         },
-        setMessageOnLoginPage: (state, action: PayloadAction<string>) => {
-            state.messageOnLoginPage = action.payload;
-        },
-        clearMessageOnLoginPage: (state) => {
-            state.messageOnLoginPage = "";
+        setPersist: (state, action: PayloadAction<boolean>) => {
+            state.persist = action.payload;
         }
     }
 })
 
-export const {authing, login, logout, setMessageOnLoginPage, clearMessageOnLoginPage} = authSlice.actions
+export const authSliceActions = authSlice.actions
 
 export default authSlice.reducer
 

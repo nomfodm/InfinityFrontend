@@ -6,7 +6,6 @@ export interface User {
     registeredAt: Date;
     textures: Textures;
     minecraftCredential: MinecraftCredential;
-    accessToken: string;
 }
 
 interface Textures {
@@ -17,8 +16,4 @@ interface Textures {
 interface MinecraftCredential {
     username: string;
     uuid: string;
-}
-
-export interface StatusResponse {
-    status: string;
 }
