@@ -16,31 +16,25 @@ import {
 } from '@tabler/icons-react';
 import classes from './Header.module.css';
 import InfinityLogo from "../infinitylogo/InfinityLogo.tsx";
-import {useLayoutEffect, useState} from "react";
+import {useState} from "react";
 import cx from "clsx";
-import {checkAuth, logout} from "../../http/auth.ts";
 import {useAppSelector} from "../../store/hooks.ts";
-import {Link, Outlet, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ThemeToggleButton} from "../themetogglebutton/ThemeToggleButton.tsx";
 import {getTextureAvatarURL} from "../../utils/textures.ts";
+import {useLogout} from "../../hooks/useLogout.ts";
 
 const links = [
     {link: '/about', label: 'О нас'},
     {link: "/launcher", label: 'Лаунчер'},
 ];
 export default function Header() {
-    useLayoutEffect(() => {
-        async function wrapper() {
-            await checkAuth();
-        }
-
-        wrapper()
-    }, [])
-
     const [opened, {toggle, close}] = useDisclosure(false);
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const auth = useAppSelector((state) => state.auth)
     const navigate = useNavigate()
+
+    const logout = useLogout()
 
     function handleSettings() {
         navigate("/pa")
@@ -145,7 +139,7 @@ export default function Header() {
                 Личный кабинет
             </Box>
             <Box
-                onClick={logout}
+                onClick={handleLogout}
                 className={cx(classes.link, classes.linkRed)}
             >
                 <IconLogout style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
@@ -162,9 +156,9 @@ export default function Header() {
                         <InfinityLogo/>
                         <Group gap={5} visibleFrom="sm">
                             {navItems}
-                            {auth.authed && userMenu()}
-                            {!auth.authed &&
-                                <Button loading={auth.authing} size={"xs"} onClick={handleLogin}
+                            {auth.user && userMenu()}
+                            {!auth.user &&
+                                <Button loading={false} size={"xs"} onClick={handleLogin}
                                         leftSection={<IconLogin2 size={18}/>}
                                         variant="filled">
                                     Войти
@@ -184,14 +178,14 @@ export default function Header() {
                     <Space h={10}/>
                     {navItems}
                     <Divider my={"md"}/>
-                    {auth.authed && userMenuMobile()}
-                    {!auth.authed &&
+                    {auth.user && userMenuMobile()}
+                    {!auth.user &&
                         <Group gap={10}>
-                            <Button loading={auth.authing} onClick={handleLogin}
+                            <Button loading={false} onClick={handleLogin}
                                     leftSection={<IconLogin2 size={18}/>} variant="filled">
                                 Войти
                             </Button>
-                            <Button loading={auth.authing} onClick={handleRegister}
+                            <Button loading={false} onClick={handleRegister}
                                     leftSection={<IconUserPlus size={18}/>}
                                     variant="outline">
                                 Зарегистрироваться
@@ -202,7 +196,6 @@ export default function Header() {
                 </Container>
             </Collapse>
             <Space h={10}/>
-            <Outlet/>
         </>
     );
 }

@@ -1,19 +1,21 @@
 import {Button, Flex, Group, Modal, Paper, rem, Text, TextInput, useMantineTheme} from "@mantine/core";
 import ReactSkinview3d from "react-skinview3d";
-import {getTextureURL} from "../../../utils/textures.ts";
-import {useAppDispatch, useAppSelector} from "../../../store/hooks.ts";
+import {getTextureURL} from "../../utils/textures.ts";
+import {useAppSelector} from "../../store/hooks.ts";
 import {useEffect, useState} from "react";
-import {setMessageOnLoginPage} from "../../../store/auth/authSlice.ts";
-import {useNavigate} from "react-router-dom";
 import {useForm} from "@mantine/form";
-import {newNickname, uploadCape, uploadSkin} from "../../../http/user.ts";
-import {me} from "../../../http/auth.ts";
 import {useDisclosure} from "@mantine/hooks";
 import {FileWithPath} from "@mantine/dropzone";
-import PngDropzone from "../../pngdropzone/PngDropzone.tsx";
+import PngDropzone from "../pngdropzone/PngDropzone.tsx";
+import {useFetchUser} from "../../hooks/useFetchUser.ts";
+import {AxiosError} from "axios";
+import {ErrorResponse} from "../../models/error.ts";
+import {usePrivateApi} from "../../hooks/usePrivateApi.ts";
+import {useUploadSkin} from "../../hooks/useUploadSkin.ts";
+import {useUploadCape} from "../../hooks/useUploadCape.ts";
 
 export default function PersonalAccountMain() {
-    const auth = useAppSelector((state) => state.auth)
+    const authState = useAppSelector((state) => state.auth)
     const usernameForm = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -28,22 +30,15 @@ export default function PersonalAccountMain() {
         }
     })
 
-    const navigate = useNavigate()
-    const dispatch = useAppDispatch();
+    // const navigate = useNavigate()
+    // const dispatch = useAppDispatch();
+
+    const fetchUser = useFetchUser()
+    const apiPrivate = usePrivateApi()
 
     useEffect(() => {
-            if (!auth.authed) {
-                dispatch(setMessageOnLoginPage("Для начала войдите в аккаунт"))
-                navigate("/login")
-                return
-            }
-            document.title = `Личный кабинет ${import.meta.env.VITE_TITLE_SUFFIX}`
-
-        }, [auth.authed, dispatch, navigate])
-
-    useEffect(() => {
-        usernameForm.setInitialValues({"newNickname": auth.user!.minecraftCredential.username})
-        usernameForm.setValues({"newNickname": auth.user!.minecraftCredential.username})
+        usernameForm.setInitialValues({"newNickname": authState.user!.minecraftCredential.username})
+        usernameForm.setValues({"newNickname": authState.user!.minecraftCredential.username})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -56,15 +51,24 @@ export default function PersonalAccountMain() {
             return
         }
 
-        if (usernameForm.getValues().newNickname === auth.user!.minecraftCredential.username) {
-            usernameForm.setErrors({newNickname: "Нужно поменять никнейм и только потом применять!"})
+        const newNickname = usernameForm.getValues().newNickname
+
+        if (newNickname === authState.user!.minecraftCredential.username) {
             return
         }
 
-        const status = await newNickname(usernameForm.getValues().newNickname)
-        setUsernameFormStatusMessage(status)
+        try {
+            await apiPrivate.get("/user/nickname", {params: {"new_nickname": newNickname}})
+            setUsernameFormStatusMessage("")
+            await fetchUser()
+        } catch (error) {
+            const err = error as AxiosError
+            const errorResponse = err.response!.data as ErrorResponse
+            setUsernameFormStatusMessage(errorResponse.error)
+        }
 
-        await me()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        setUsernameFormStatusMessage("123")
     }
 
     const [skinModalOpened, skinModalHandlers] = useDisclosure(false);
@@ -73,19 +77,28 @@ export default function PersonalAccountMain() {
     const [skinUploading, setSkinUploading] = useState(false);
     const [capeUploading, setCapeUploading] = useState(false);
 
+    const uploadSkin = useUploadSkin()
+    const uploadCape = useUploadCape()
+
     async function handleSkinUpload(files: FileWithPath[]) {
         setSkinUploading(true)
+
         await uploadSkin(files)
-        await me()
+        await fetchUser()
+
         skinModalHandlers.close()
+
         setSkinUploading(false)
     }
 
     async function handleCapeUpload(files: FileWithPath[]) {
         setCapeUploading(true)
+
         await uploadCape(files)
-        await me()
+        await fetchUser()
+
         capeModalHandlers.close()
+
         setCapeUploading(false)
     }
 
@@ -96,7 +109,7 @@ export default function PersonalAccountMain() {
         <Modal withCloseButton={false} opened={capeModalOpened} onClose={capeModalHandlers.close}>
             <PngDropzone loading={capeUploading} onDropCallback={handleCapeUpload} textureType={"плащ"} />
         </Modal>
-        {auth.authed && (
+        {authState.user && (
             <Flex wrap={"wrap"} gap={"sm"}>
                 <Flex flex={"1 1 0"} gap={"sm"} direction={"column"}>
                     <Paper p={"sm"} withBorder>
@@ -118,8 +131,8 @@ export default function PersonalAccountMain() {
                 <Paper flex={"0 1 0"} p={"sm"} withBorder>
                     <Flex direction={"column"} gap={rem(10)} w={rem(300)}>
                         <ReactSkinview3d width={300 * theme.scale} height={300 * theme.scale}
-                                         skinUrl={getTextureURL(auth.user!.textures.skinHash)}
-                                         capeUrl={auth.user!.textures.capeHash === null ? undefined : getTextureURL(auth.user!.textures.capeHash)}
+                                         skinUrl={getTextureURL(authState.user!.textures.skinHash)}
+                                         capeUrl={authState.user!.textures.capeHash === null ? undefined : getTextureURL(authState.user!.textures.capeHash)}
                         />
                         <Button onClick={skinModalHandlers.open} variant={"filled"}>Загрузить скин</Button>
                         <Button onClick={capeModalHandlers.open} variant={"outline"}>Загрузить плащ</Button>

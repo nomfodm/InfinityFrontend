@@ -1,6 +1,6 @@
 import {Container, rem, Tabs} from "@mantine/core";
 import {IconUser} from "@tabler/icons-react";
-import PersonalAccountMain from "../../components/personalaccountparts/main/PAMain.tsx";
+import PersonalAccountMain from "../components/personalaccountparts/PAMain.tsx";
 
 export default function PersonalAccount() {
     const iconStyle = {width: rem(15), height: rem(15)};
