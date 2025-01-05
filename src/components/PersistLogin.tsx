@@ -79,8 +79,6 @@ export default function PersistLogin() {
 
     return (
         <>
-            {/*{!authState.persist*/}
-            {/*    ? <Outlet/>*/}
                 <Box h={"100vh"} pos={"relative"}>
                     <LoadingOverlay transitionProps={{transition: "fade", duration: 500}}
                                     visible={isLoading || !connected}
