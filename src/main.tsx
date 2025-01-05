@@ -1,7 +1,7 @@
 import {createRoot} from 'react-dom/client'
 import '@mantine/core/styles.css';
 import './index.css'
-import MainPage from './pages/MainPage.tsx'
+import MainPage from './pages/main/MainPage.tsx'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Provider} from "react-redux";
 import store from "./store.ts";
