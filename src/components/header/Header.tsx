@@ -25,7 +25,6 @@ import {getTextureAvatarURL} from "../../utils/textures.ts";
 import {useLogout} from "../../hooks/useLogout.ts";
 
 const links = [
-    {link: '/about', label: 'О нас'},
     {link: "/launcher", label: 'Лаунчер'},
 ];
 export default function Header() {
@@ -125,8 +124,8 @@ export default function Header() {
         return <>
             <Group gap={7}>
                 <Avatar src={getTextureAvatarURL(user.textures.skinHash)} alt={user.username} radius="xl"
-                        size={24}/>
-                <Text fw={500} size="sm" lh={1} mr={3}>
+                        size={rem(24)}/>
+                <Text fw={500} size="sm" lh={1} mr={rem(3)}>
                     {user.username}
                 </Text>
             </Group>
@@ -154,19 +153,19 @@ export default function Header() {
                 <Container size="lg">
                     <div className={classes.inner}>
                         <InfinityLogo/>
-                        <Group gap={5} visibleFrom="sm">
+                        <Group gap={rem(5)} visibleFrom="sm">
                             {navItems}
                             {auth.user && userMenu()}
                             {!auth.user &&
                                 <Button loading={false} size={"xs"} onClick={handleLogin}
-                                        leftSection={<IconLogin2 size={18}/>}
+                                        leftSection={<IconLogin2 size={rem(18)}/>}
                                         variant="filled">
                                     Войти
                                 </Button>
                             }
                             <ThemeToggleButton/>
                         </Group>
-                        <Group gap={5} hiddenFrom="sm">
+                        <Group gap={rem(5)} hiddenFrom="sm">
                             <ThemeToggleButton/>
                             <Burger opened={opened} onClick={toggle} size="sm"/>
                         </Group>
@@ -175,27 +174,27 @@ export default function Header() {
             </header>
             <Collapse hiddenFrom="sm" className={classes.mobileNavigation} in={opened}>
                 <Container size="xs">
-                    <Space h={10}/>
+                    <Space h={rem(10)}/>
                     {navItems}
                     <Divider my={"md"}/>
                     {auth.user && userMenuMobile()}
                     {!auth.user &&
-                        <Group gap={10}>
+                        <Group gap={rem(10)}>
                             <Button loading={false} onClick={handleLogin}
-                                    leftSection={<IconLogin2 size={18}/>} variant="filled">
+                                    leftSection={<IconLogin2 size={rem(18)}/>} variant="filled">
                                 Войти
                             </Button>
                             <Button loading={false} onClick={handleRegister}
-                                    leftSection={<IconUserPlus size={18}/>}
+                                    leftSection={<IconUserPlus size={rem(18)}/>}
                                     variant="outline">
                                 Зарегистрироваться
                             </Button>
                         </Group>
                     }
-                    <Space h={15}/>
+                    <Space h={rem(15)}/>
                 </Container>
             </Collapse>
-            <Space h={10}/>
+            <Space h={rem(10)}/>
         </>
     );
 }
