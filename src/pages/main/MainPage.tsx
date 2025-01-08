@@ -2,6 +2,7 @@ import {useEffect} from "react";
 import {Button, Container, Group, Image, rem, Text, Title} from "@mantine/core";
 import classes from "./MainPage.module.css"
 import {useNavigate} from "react-router-dom";
+import {useAppSelector} from "../../store/hooks.ts";
 
 export default function MainPage() {
     useEffect(() => {
@@ -10,11 +11,17 @@ export default function MainPage() {
 
     const navigate = useNavigate();
 
+    const authState = useAppSelector(state => state.auth);
+
     function handlePlay() {
         navigate("/launcher")
     }
 
     function handleLogin() {
+        if (authState.user) {
+            navigate("/pa")
+            return
+        }
         navigate("/login")
     }
 
@@ -35,7 +42,7 @@ export default function MainPage() {
                                 Играть
                             </Button>
                             <Button onClick={handleLogin} variant="default" radius="sm" size="md" className={classes.control}>
-                                Войти
+                                {authState.user ? "Перейти в личный кабинет" : "Войти"}
                             </Button>
                         </Group>
                     </div>
