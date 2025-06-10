@@ -56,7 +56,7 @@ const router = createBrowserRouter([
                     {
                         path: "launcher",
                         element: <Redirect
-                            url={"https://github.com/nomfodm/InfinityLauncher/releases/latest/download/InfinityLauncher.exe"}/>
+                            url={`${import.meta.env.VITE_BACKEND_BASE_URL}/launcher/download`}/>
                     },
                     {
                         path: "*",
