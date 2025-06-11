@@ -158,16 +158,16 @@ export default function Header() {
                             {auth.user && userMenu()}
                             {!auth.user &&
                                 <Button loading={false} size={"xs"} onClick={handleLogin}
-                                        leftSection={<IconLogin2 size={rem(18)}/>}
+                                        leftSection={<IconLogin2 style={{width: rem(18), height: rem(18)}}/>}
                                         variant="filled">
                                     Войти
                                 </Button>
                             }
                             <ThemeToggleButton/>
                         </Group>
-                        <Group gap={rem(5)} hiddenFrom="sm">
+                        <Group align={"center"} gap={rem(5)} hiddenFrom="sm">
                             <ThemeToggleButton/>
-                            <Burger opened={opened} onClick={toggle} size="sm"/>
+                            <Burger opened={opened} onClick={toggle} size={19}/>
                         </Group>
                     </div>
                 </Container>
@@ -181,11 +181,11 @@ export default function Header() {
                     {!auth.user &&
                         <Group gap={rem(10)}>
                             <Button loading={false} onClick={handleLogin}
-                                    leftSection={<IconLogin2 size={rem(18)}/>} variant="filled">
+                                    leftSection={<IconLogin2 style={{width: rem(18), height: rem(18)}}/>} variant="filled">
                                 Войти
                             </Button>
                             <Button loading={false} onClick={handleRegister}
-                                    leftSection={<IconUserPlus size={rem(18)}/>}
+                                    leftSection={<IconUserPlus style={{width: rem(18), height: rem(18)}}/>}
                                     variant="outline">
                                 Зарегистрироваться
                             </Button>
