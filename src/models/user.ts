@@ -15,5 +15,4 @@ interface Textures {
 
 interface MinecraftCredential {
     username: string;
-    uuid: string;
 }
